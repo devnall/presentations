@@ -1,0 +1,217 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>fzf+fd</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/moon.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+        <section data-markdown>
+          <textarea data-template>
+            ## `fzf` & `fd`:
+            ## Fast Fuzzy Finds
+          </textarea>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+            ## `fd`
+            > "`fd` is a simple, fast and user-friendly alternative to find."
+
+            https://github.com/sharkdp/fd
+          </textarea>
+        </section>
+				<section data-markdown>
+					<textarea data-template>
+						## Install & Setup `fd`
+
+						* homebrew / pacman / dpkg -i / nix-env or from source via cargo
+					</textarea>
+				</section>
+        <section>
+					<section data-markdown>
+						<textarea data-template>
+						## `fd` Features
+
+						* Convenient syntax: <pre>fd PATTERN</pre> instead of <pre>find -iname '\*PATTERN\*'</pre>
+						* Colorized terminal output
+						* It's _FAST_
+						* Smart case
+						</textarea>
+					</section>
+					<section data-markdown>
+						<textarea data-template>
+						## `fd` Features
+
+						* Ignores hidden directories and files, by default
+						* Ignores patterns from `.(git)ignore`, by default
+						* Unicode-awareness
+						* Parallel command execution
+						</textarea>
+					</section>
+        </section>
+        <section>
+          <h2>Using <code>fd</code></h2>
+          <img src="fd_args.png" alt="fd command arguments" width="600">
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+            # DEMO
+          </textarea>
+        </section>
+				<section data-markdown>
+					<textarea data-template>
+						## `fzf`
+						> "[_fzf_ is] an interactive Unix filter for the command-line that can be used with any list; files, command history, processes, hostnames, bookmarks, git commits, etc."
+
+						https://github.com/junegunn/fzf/
+					</textarea>
+				</section>
+        <section>
+        <section data-markdown>
+          <textarea data-template>
+           ## Install & Setup `fzf`
+
+           * homebrew or linuxbrew (or git clone and run the install script)
+           * `$(brew --prefix)/opt/fzf/install` - for useful keybindings and fuzzy completion
+           * vim plugin - either add to runtime path or use vim-plug
+           * edit ~/.fzf.zsh and replace `find` with `fd` under keybinds
+           * `alias find='echo "No! Use fd instead! So. Much. Faster."'`
+          </textarea>
+        </section>
+        <section>
+          <pre><code>
+  export FZF_DEFAULT_COMMAND="fd --type file --follow --hidden \
+                          --exclude .git --color=always . $HOME"
+  export FZF_DEFAULT_OPTS="--ansi"
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  export FZF_ALT_C_COMMAND="fd --type directory --exclude .git \
+                                      --color=always . $HOME"
+          </code></pre>
+        </section>
+        </section>
+        <section>
+          <section>
+            <table>
+              <thead>
+                <tr>
+                  <th>Token</th>
+                  <th>Match Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>sbtrkt</code></td>
+                  <td>fuzzy match</td>
+                  <td>Items that match <code>sbtrkt</code></td>
+                </tr>
+                <tr>
+                  <td><code>^music</code></td>
+                  <td>prefix-exact-match</td>
+                  <td>Items that start with <code>music</code></td>
+                </tr>
+                <tr>
+                  <td><code>.mp3$</code></td>
+                  <td>suffix-exact-match</td>
+                  <td>Items that end with <code>.mp3</code></td>
+                </tr>
+                <tr>
+                  <td><code>'wild</code></td>
+                  <td>exact-match (quoted)</td>
+                  <td>Items that include <code>wild</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+          <section>
+          <table>
+            <thead>
+              <tr>
+                <th>Token</th>
+                <th>Match Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>!fire</code></td>
+                <td>inverse-exact-match</td>
+                <td>Items that do not include <code>fire</code></td>
+              </tr>
+              <tr>
+                <td><code>!.mp3$</code></td>
+                <td>inverse-suffix-exact-match</td>
+                <td>Items that do not end with <code>.mp3</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+        </section>
+        <section>
+        <section data-markdown>
+          <textarea data-template>
+            ## Using `fzf`
+
+            * `CTRL+T` - fuzzy search for a file (and/or directory) and paste it at the prompt
+            * `ALT+C` - fuzzy search for a directory and change to it
+            * `CTRL+R` - fuzzy search command history
+          </textarea>
+        </section>
+       <section data-markdown>
+          <textarea data-template>
+            * `kill <TAB>` - fuzzy search process list
+            * `ssh **<TAB>` - fuzzy search of hosts from known_hosts, /etc/hosts/ and ~/.ssh/config (telnet too) 
+            * `[unset|export|unalias] **<TAB>` - fuzzy search env vars and aliases
+            * Other stuff! How about `git log|fzf`? Logfile searching?
+          </textarea>
+        </section>
+        </section>
+       <section data-markdown>
+          <textarea data-template>
+            # DEMO
+          </textarea>
+        </section>
+			</div>
+		</div>
+       <section data-markdown>
+          <textarea data-template>
+          </textarea>
+        </section>
+
+            | `!.mp3$`      | inverse-suffix-exact-match | Items that do not end with `.mp3` |
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
